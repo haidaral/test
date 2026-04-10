@@ -1,1 +1,25 @@
+name: Gemini CLI Review
 
+# This tells GitHub to run this workflow whenever a Pull Request is opened or updated
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository files
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Gemini CLI
+        # This securely pulls the API key you saved in the repository secrets
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        # This is the actual command Gemini will run. You can change the prompt inside the quotes!
+        run: npx @google/gemini-cli "Review the markdown and text files in this repository. Give me a bulleted summary of what this project is about and any obvious formatting errors."
